@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Viewer</title>
+    <style>
+        body { font-family: sans-serif; background: #eee; padding: 20px; }
+        .wrap { max-width: 600px; margin: auto; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; box-sizing: border-box; }
+        button { padding: 10px 16px; background: #3b82f6; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        canvas { display: block; margin-top: 20px; max-width: 100%; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h3>Generator Chat Viewer</h3>
+    <input id="viewer" placeholder="Nama Viewer">
+    <textarea id="msg" placeholder="Isi Chat"></textarea>
+    <button onclick="draw()">Generate</button>
+    <button onclick="downloadImage()" style="background: #28a745;">Download PNG</button>
+    <canvas id="cv" width="900" height="200"></canvas>
+</div>
+
+<script>
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+
+function draw() {
+    const name = document.getElementById("viewer").value;
+    const chat = document.getElementById("msg").value;
+    
+    ctx.font = "bold 35px Arial";
+    const nameWidth = ctx.measureText(name).width;
+    ctx.font = "30px Arial";
+    const chatWidth = ctx.measureText(chat).width;
+    
+    // Hitung lebar kotak otomatis (pilih yang terpanjang + padding)
+    const boxWidth = Math.max(nameWidth, chatWidth) + 150; 
+    
+    cv.width = boxWidth + 40; // Sesuaikan ukuran canvas
+
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    
+    // 1. Gambar Kotak Abu-abu Otomatis
+    ctx.fillStyle = "#9ea7b5";
+    ctx.beginPath();
+    ctx.roundRect(20, 20, boxWidth, 150, 20);
+    ctx.fill();
+    
+    // 2. Gambar Ikon Kepala
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(80, 95, 30, 0, Math.PI * 2);
+    ctx.moveTo(110, 150);
+    ctx.quadraticCurveTo(80, 120, 50, 150);
+    ctx.fill();
+    
+    // 3. Teks
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 35px Arial";
+    ctx.fillText(name, 130, 80);
+    ctx.font = "30px Arial";
+    ctx.fillText(chat, 130, 130);
+}
+
+function downloadImage() {
+    const link = document.createElement('a');
+    link.download = 'chat-result.png';
+    link.href = cv.toDataURL('image/png');
+    link.click();
+}
+
+draw(); // Jalankan sekali saat dimuat
+</script>
+</body>
+</html>
